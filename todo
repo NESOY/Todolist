@@ -30,12 +30,21 @@ def list():
             print("[" + str(index) + "] " +task[0])
             index += 1
 
+def remove(desc):
+    conn = sqlite.connect(DATABASE_NAME)
+    with conn:
+        cur = conn.cursor()
+        sql = "DELETE FROM task WHERE description == (?)"
+        cur.execute(sql, [desc])
+
 def main(argv):
     init()
     if(argv[1] == "add"):
         add(argv[2])
     if(argv[1] == "list"):
         list()
+    if(argv[1] == "remove"):
+        remove(argv[2])
 
 if __name__ == "__main__":
         main(sys.argv)
