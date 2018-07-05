@@ -25,7 +25,10 @@ def list():
         cur = conn.cursor()
         sql = "SELECT * FROM task"
         cur.execute(sql)
-        print(cur.fetchall())
+        index = 1
+        for task in cur.fetchall():
+            print("[" + str(index) + "] " +task[0])
+            index += 1
 
 def main(argv):
     init()
