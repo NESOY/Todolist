@@ -16,15 +16,17 @@ def addTodo(param):
     global conn
     cur = conn.cursor()
     sql = "INSERT INTO task(desc, done) values (?,?)"
-    cur.execute(sql, [param, "TODO"])
+    cur.execute(sql, [param, 'TODO'])
     conn.commit()
+    conn.close()
 
 def getTodoList():
     global conn
     todoList = [] # empty todolist
     cur = conn.cursor()
-    sql = "SELECT * FROM task WHERE done = (?)"
-    cur.execute(sql, ["TODO"])
+    sql = "SELECT * FROM task"
+    #sql = "SELECT * FROM task WHERE done = (?)"
+    #cur.execute(sql, ["TODO"])
     for task in cur.fetchall():
         todoList.append(task)
     return todoList
@@ -34,7 +36,7 @@ def getDoneList():
     todoList = [] # empty todolist
     cur = conn.cursor()
     sql = "SELECT * FROM task WHERE done = (?)"
-    cur.execute(sql, ["DONE"])
+    cur.execute(sql, ['DONE'])
     for task in cur.fetchall():
         todoList.append(task)
     return todoList
@@ -44,7 +46,7 @@ def getDoingList():
     todoList = [] # empty todolist
     cur = conn.cursor()
     sql = "SELECT * FROM task WHERE done = (?)"
-    cur.execute(sql, ["DONE"])
+    cur.execute(sql, ['DONE'])
     for task in cur.fetchall():
         todoList.append(task)
     return todoList    
@@ -77,7 +79,7 @@ def startTodo(todoList, index):
     cur = conn.cursor()
     print(todoList[int(index)-1])
     sql = 'UPDATE task SET done = (?) WHERE id=(?)'
-    cur.execute(sql, ["DOING", id])
+    cur.execute(sql, ['DOING', id])
     conn.commit()
 
 def main(argv):
