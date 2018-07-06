@@ -15,7 +15,7 @@ def init():
 def initLogo():
     print("# Todo List")
 
-def add(param):
+def addTodo(param):
     conn = sqlite.connect(DATABASE_NAME)	
     with conn:
         cur = conn.cursor()
@@ -23,16 +23,23 @@ def add(param):
         cur.execute(sql, [param, False])
         conn.commit()
 
-def taskList():
+def getTodoList():
     conn = sqlite.connect(DATABASE_NAME)
+    todoList = [] # empty todolist
     with conn:
         cur = conn.cursor()
         sql = "SELECT * FROM task"
         cur.execute(sql)
-        index = 1
         for task in cur.fetchall():
-            print("[" + str(index) + "] " + task[0] + " " + str(task[1]))
-            index += 1
+            todoList.append(task)
+        
+        printTodoList(todoList)
+
+def printTodoList(todoList):
+    index = 1
+    for todo in todoList:
+        print("[" + str(index) + "] " + todo[0] + " " + str(todo[1]))
+        index += 1
 
 def remove(desc):
     conn = sqlite.connect(DATABASE_NAME)
@@ -44,9 +51,9 @@ def remove(desc):
 def main(argv):
     init()
     if(argv[1] == "add"):
-        add(argv[2])
+        addTodo(argv[2])
     if(argv[1] == "list"):
-        taskList()
+        getTodoList()
     if(argv[1] == "remove"):
         remove(argv[2])
 
