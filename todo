@@ -1,61 +1,119 @@
 #!/usr/local/bin/python3
-# Author : Nesoy
+# Author : nesoy
 
 import sqlite3 as sqlite
 import sys
 
 DATABASE_NAME = "todolist.db"
+conn = sqlite.connect(DATABASE_NAME)
 
 def init():
-    initLogo()
-    conn = sqlite.connect(DATABASE_NAME)
-    with conn:
-        cur = conn.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS task(description TEXT, done boolean)")
-def initLogo():
-    print("# Todo List")
+    global conn
+    cur = conn.cursor()
+    cur.execute("CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, desc TEXT, done TEXT)")
 
 def addTodo(param):
-    conn = sqlite.connect(DATABASE_NAME)	
-    with conn:
-        cur = conn.cursor()
-        sql = "INSERT INTO task(description, done) values (?,?)"
-        cur.execute(sql, [param, False])
-        conn.commit()
+    global conn
+    cur = conn.cursor()
+    sql = "INSERT INTO task(desc, done) values (?,?)"
+    cur.execute(sql, [param, "TODO"])
+    conn.commit()
 
 def getTodoList():
-    conn = sqlite.connect(DATABASE_NAME)
+    global conn
     todoList = [] # empty todolist
-    with conn:
-        cur = conn.cursor()
-        sql = "SELECT * FROM task"
-        cur.execute(sql)
-        for task in cur.fetchall():
-            todoList.append(task)
-        
-        printTodoList(todoList)
+    cur = conn.cursor()
+    sql = "SELECT * FROM task WHERE done = (?)"
+    cur.execute(sql, ["TODO"])
+    for task in cur.fetchall():
+        todoList.append(task)
+    return todoList
 
-def printTodoList(todoList):
-    index = 1
-    for todo in todoList:
-        print("[" + str(index) + "] " + todo[0] + " " + str(todo[1]))
-        index += 1
+def getDoneList():
+    global conn
+    todoList = [] # empty todolist
+    cur = conn.cursor()
+    sql = "SELECT * FROM task WHERE done = (?)"
+    cur.execute(sql, ["DONE"])
+    for task in cur.fetchall():
+        todoList.append(task)
+    return todoList
 
-def remove(desc):
-    conn = sqlite.connect(DATABASE_NAME)
-    with conn:
-        cur = conn.cursor()
-        sql = "DELETE FROM task WHERE description == (?)"
-        cur.execute(sql, [desc])
+def getDoingList():
+    global conn
+    todoList = [] # empty todolist
+    cur = conn.cursor()
+    sql = "SELECT * FROM task WHERE done = (?)"
+    cur.execute(sql, ["DONE"])
+    for task in cur.fetchall():
+        todoList.append(task)
+    return todoList    
+
+def printTodoList(listName, todoList):
+    print(listName)
+    if(len(todoList) > 0):
+        index = 1
+        print("    DONE  NAME")
+        for todo in todoList:
+            done = "X"
+            if(todo[2] == "DOING"):
+                done = "W"
+            if(todo[2] == "DONE"):
+                done = "O"
+            print("[" + str(index) + "]  " + done + "  : " + todo[1])
+            index += 1
+
+def removeTodo(todoList, index):
+    global conn
+    id = todoList[int(index)-1][0]
+    cur = conn.cursor()
+    sql = 'DELETE FROM task WHERE id=(?)'
+    cur.execute(sql, [id])
+    conn.commit()
+
+def startTodo(todoList, index):
+    global conn
+    id = todoList[int(index)-1][0]
+    cur = conn.cursor()
+    print(todoList[int(index)-1])
+    sql = 'UPDATE task SET done = (?) WHERE id=(?)'
+    cur.execute(sql, ["DOING", id])
+    conn.commit()
 
 def main(argv):
     init()
+    # Create
     if(argv[1] == "add"):
         addTodo(argv[2])
+    # Read
     if(argv[1] == "list"):
-        getTodoList()
+        if(len(argv) > 2):
+            if(argv[2] == "done"):
+                todoList = getDoneList()
+                printTodoList("# Done List", todoList)
+            elif(argv[2] == "doing"):
+                todoList = getDoingList()
+                printTodoList("# Doing List", todoList)
+            elif(argv[2] == "all"):
+                todoList = getTodoList()
+                printTodoList("# Todo List", todoList)
+                todoList = getDoneList()
+                printTodoList("# Done List", todoList)
+        else:
+            todoList = getTodoList()
+            printTodoList("# Todo List", todoList)
+
+    # Update
+    if(argv[1] == "start"):
+        todoList = getTodoList()
+        startTodo(todoList, argv[2])
+
+    # Delete
     if(argv[1] == "remove"):
-        remove(argv[2])
+        todoList = getTodoList()
+        removeTodo(todoList, argv[2])
+
+    # Search
 
 if __name__ == "__main__":
         main(sys.argv)
