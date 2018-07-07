@@ -8,9 +8,9 @@ DATABASE_NAME = "todolist.db"
 conn = sqlite.connect(DATABASE_NAME)
 
 # Magic Number
-TODO = 'TODO'
+TODO = ' '
 DOING = 'DOING'
-DONE = 'DONE'
+DONE = 'O'
 
 # SQL
 SQL_GET_LIST = "SELECT * FROM task WHERE status = (?)"
@@ -72,6 +72,15 @@ def startTodo(todoList, index):
         cur.execute(sql, [DOING, id])
         conn.commit()
 
+def endTodo(todoList, index):
+    global conn
+    id = todoList[int(index)-1][0]
+    with conn:
+        cur = conn.cursor()
+        sql = SQL_UPDATE_TODO
+        cur.execute(sql, [DONE, id])
+        conn.commit()
+
 # PRINT
 def printAllList():
     printTodoList()
@@ -94,7 +103,6 @@ def printList(listName, todoList):
     print(listName)
     if(len(todoList) > 0):
         index = 1
-        print("   STATUS  DESC")
         for todo in todoList:
             print("[" + str(index) + "] " + todo[1] + " : " + todo[2])
             index += 1
@@ -121,6 +129,9 @@ def main(argv):
     if(argv[1] == "start"):
         todoList = getTodoList()
         startTodo(todoList, argv[2])
+    if(argv[1] == "end"):
+        todoList = getDoingList()
+        endTodo(todoList, argv[2])
 
 if __name__ == "__main__":
         main(sys.argv)
