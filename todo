@@ -8,9 +8,9 @@ DATABASE_NAME = "todolist.db"
 conn = sqlite.connect(DATABASE_NAME)
 
 # Status
-TODO = ' '
-DOING = 'DOING'
-DONE = 'O'
+TODO = 'todo'
+DOING = 'doing'
+DONE = 'done'
 
 # SQL
 SQL_GET_LIST = "SELECT * FROM task WHERE status = (?)"
@@ -100,24 +100,27 @@ def printAllList():
 
 def printTodoList():
     todoList = getTodoList()
-    printYelloHeader("# Todo List")
-    printList(todoList)
+    printYelloHeader("➤ Todo List")
+    printList(todoList, color.WARNING)
 
 def printDoingList():
     todoList = getDoingList()
-    printBlueHeader("# Doing List")
-    printList(todoList)
+    printBlueHeader("➤ Doing List")
+    printList(todoList, color.OKBLUE)
 
 def printDoneList():
     todoList = getDoneList()
-    printGreenHeader("# Done List")
-    printList(todoList)
+    printGreenHeader("➤ Done List")
+    printList(todoList, color.OKGREEN)
 
-def printList(todoList):
+def printList(todoList, stringColor):
     if(len(todoList) > 0):
         index = 1
         for todo in todoList:
-            print("[" + str(index) + "] " + todo[1] + " : " + todo[2])
+            status = todo[1]
+            desc = todo[2]
+            #print(color.OKGREEN + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + color.OKGREEN + desc + color.ENDC)
+            print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC)
             index += 1
 
 def printYelloHeader(string):
@@ -130,12 +133,14 @@ def printBlueHeader(string):
 def main(argv):
     init()
     if(argv[1] == "add"):
-        addTodo(argv[2])
+        addTodo(argv[2]) # 띄어쓰기 시 입력 안되는 버그
 
     if(argv[1] == "list"):
         if(len(argv) > 2):
             if(argv[2] == "all"):
                 printAllList()
+            if(argv[2] == "doing"):
+                printDoingList()
             if(argv[2] == "done"):
                 printDoneList()
         else:
@@ -154,7 +159,7 @@ def main(argv):
         todoList = getDoingList()
         endTodo(todoList, argv[2])
     
-    # Todo : Search    
+    # Todo : Search
 
 if __name__ == "__main__":
         main(sys.argv)
