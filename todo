@@ -100,17 +100,17 @@ def printAllList():
 
 def printTodoList():
     todoList = getTodoList()
-    printHeader("# Todo List")
+    printYelloHeader("# Todo List")
     printList(todoList)
 
 def printDoingList():
     todoList = getDoingList()
-    printHeader("# Doing List")
+    printBlueHeader("# Doing List")
     printList(todoList)
 
 def printDoneList():
     todoList = getDoneList()
-    printHeader("# Done List")
+    printGreenHeader("# Done List")
     printList(todoList)
 
 def printList(todoList):
@@ -120,9 +120,12 @@ def printList(todoList):
             print("[" + str(index) + "] " + todo[1] + " : " + todo[2])
             index += 1
 
-def printHeader(string):
+def printYelloHeader(string):
     print(color.BOLD + color.WARNING + string + color.ENDC)
-
+def printGreenHeader(string):
+    print(color.BOLD + color.OKGREEN + string + color.ENDC)
+def printBlueHeader(string):
+    print(color.BOLD + color.OKBLUE + string + color.ENDC)
 
 def main(argv):
     init()
