@@ -147,6 +147,7 @@ def main(argv):
     
     if(argv[1] == "remove"):
         # Todo : Check argv Size
+        # remove only todo list -> update doing, done 
         todoList = getTodoList()
         removeTodo(todoList, argv[2])
 
