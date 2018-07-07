@@ -119,7 +119,6 @@ def printList(todoList, stringColor):
         for todo in todoList:
             status = todo[1]
             desc = todo[2]
-            #print(color.OKGREEN + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + color.OKGREEN + desc + color.ENDC)
             print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC)
             index += 1
 
