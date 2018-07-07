@@ -7,11 +7,15 @@ import sys
 DATABASE_NAME = "todolist.db"
 conn = sqlite.connect(DATABASE_NAME)
 
-# SQL
-GET_TODOLIST = "SELECT * FROM task WHERE status = 'TODO';"
-GET_DOINGLIST = "SELECT * FROM task WHERE status = 'DOING';"
-GET_DONELIST = "SELECT * FROM task WHERE status = 'DONE';"
+# Magic Number
+TODO = 'TODO'
+DOING = 'DOING'
+DONE = 'DONE'
 
+# SQL
+SQL_GET_LIST = "SELECT * FROM task WHERE status = (?)"
+SQL_DELETE_TODO = "DELETE FROM task WHERE id=(?)"
+SQL_UPDATE_TODO = "UPDATE task SET status = (?) WHERE id=(?)"
 
 def init():
     global conn
@@ -25,25 +29,25 @@ def addTodo(param):
     with conn:
         cur = conn.cursor()
         sql = "INSERT INTO task(status, description) values (?,?)"
-        cur.execute(sql, ['TODO', param])
+        cur.execute(sql, [TODO, param])
         conn.commit()
 
 # READ
 def getTodoList():
-    return getList(GET_TODOLIST)
+    return getList(TODO)
 
 def getDoingList():
-    return getList(GET_DOINGLIST)
+    return getList(DOING)
 
 def getDoneList():
-    return getList(GET_DONELIST)
+    return getList(DONE)
 
-def getList(sql):
+def getList(param):
     global conn
     todoList = [] # empty todolist
     with conn:
         cur = conn.cursor()
-        cur.execute(sql)
+        cur.execute(SQL_GET_LIST, [param])
         for task in cur.fetchall():
             todoList.append(task)
         return todoList
@@ -54,7 +58,7 @@ def removeTodo(todoList, index):
     id = todoList[int(index)-1][0]
     with conn:
         cur = conn.cursor()
-        sql = 'DELETE FROM task WHERE id=(?)'
+        sql = SQL_DELETE_TODO
         cur.execute(sql, [id])
         conn.commit()
 
@@ -64,8 +68,8 @@ def startTodo(todoList, index):
     id = todoList[int(index)-1][0]
     with conn:
         cur = conn.cursor()
-        sql = 'UPDATE task SET status = (?) WHERE id=(?)'
-        cur.execute(sql, ['DOING', id])
+        sql = SQL_UPDATE_TODO
+        cur.execute(sql, [DOING, id])
         conn.commit()
 
 # PRINT
