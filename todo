@@ -17,7 +17,7 @@ def init():
     global conn
     with conn:
         cur = conn.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, status VARCHAR, description TEXT)")
+        cur.execute("CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, status TEXT, description TEXT)")
 
 # CREATE
 def addTodo(param):
@@ -58,14 +58,29 @@ def removeTodo(todoList, index):
         cur.execute(sql, [id])
         conn.commit()
 
+# UPDATE        
+def startTodo(todoList, index):
+    global conn
+    id = todoList[int(index)-1][0]
+    with conn:
+        cur = conn.cursor()
+        sql = 'UPDATE task SET status = (?) WHERE id=(?)'
+        cur.execute(sql, ['DOING', id])
+        conn.commit()
+
 # PRINT
 def printAllList():
     printTodoList()
+    printDoingList()
     printDoneList()
 
 def printTodoList():
     todoList = getTodoList()
     printList("# Todo List", todoList)
+
+def printDoingList():
+    todoList = getDoingList()
+    printList("# Doing List", todoList)
 
 def printDoneList():
     todoList = getDoneList()
@@ -96,9 +111,12 @@ def main(argv):
            printTodoList()
 
     if(argv[1] == "remove"):
-        # Check argv Size
+        # Todo : Check argv Size
         todoList = getTodoList()
         removeTodo(todoList, argv[2])
+    if(argv[1] == "start"):
+        todoList = getTodoList()
+        startTodo(todoList, argv[2])
 
 if __name__ == "__main__":
         main(sys.argv)
