@@ -8,16 +8,16 @@ DATABASE_NAME = "todolist.db"
 conn = sqlite.connect(DATABASE_NAME)
 
 # SQL
-GET_TODOLIST = "SELECT * FROM task WHERE status='TODO'"
-GET_DOINGLIST = "SELECT * FROM task WHERE status = 'DOING' "
-GET_DONELIST = "SELECT * FROM task WHERE status = 'DONE' "
+GET_TODOLIST = "SELECT * FROM task WHERE status = 'TODO';"
+GET_DOINGLIST = "SELECT * FROM task WHERE status = 'DOING';"
+GET_DONELIST = "SELECT * FROM task WHERE status = 'DONE';"
 
 
 def init():
     global conn
     with conn:
         cur = conn.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, status TEXT, description TEXT)")
+        cur.execute("CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, status VARCHAR, description TEXT)")
 
 # CREATE
 def addTodo(param):
@@ -25,7 +25,7 @@ def addTodo(param):
     with conn:
         cur = conn.cursor()
         sql = "INSERT INTO task(status, description) values (?,?)"
-        cur.execute(sql, [param, 'TODO'])
+        cur.execute(sql, ['TODO', param])
         conn.commit()
 
 # READ
@@ -77,7 +77,7 @@ def printList(listName, todoList):
         index = 1
         print("   STATUS  DESC")
         for todo in todoList:
-            print("[" + str(index) + "] " + todo[2] + " : " + todo[1])
+            print("[" + str(index) + "] " + todo[1] + " : " + todo[2])
             index += 1
 
 
