@@ -7,7 +7,7 @@ import sys
 DATABASE_NAME = "todolist.db"
 conn = sqlite.connect(DATABASE_NAME)
 
-# Magic Number
+# Status
 TODO = ' '
 DOING = 'DOING'
 DONE = 'O'
@@ -16,19 +16,33 @@ DONE = 'O'
 SQL_GET_LIST = "SELECT * FROM task WHERE status = (?)"
 SQL_DELETE_TODO = "DELETE FROM task WHERE id=(?)"
 SQL_UPDATE_TODO = "UPDATE task SET status = (?) WHERE id=(?)"
+SQL_INSERT_TODO = "INSERT INTO task(status, description) values (?,?)"
+SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, status TEXT, description TEXT)"
+
+# Color
+class color:
+    WHITE = '\033[37m'
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 def init():
     global conn
     with conn:
         cur = conn.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, status TEXT, description TEXT)")
+        cur.execute(SQL_CREATE_TABLE)
 
 # CREATE
 def addTodo(param):
     global conn
     with conn:
         cur = conn.cursor()
-        sql = "INSERT INTO task(status, description) values (?,?)"
+        sql = SQL_INSERT_TODO
         cur.execute(sql, [TODO, param])
         conn.commit()
 
@@ -86,24 +100,28 @@ def printAllList():
 
 def printTodoList():
     todoList = getTodoList()
-    printList("# Todo List", todoList)
+    printHeader("# Todo List")
+    printList(todoList)
 
 def printDoingList():
     todoList = getDoingList()
-    printList("# Doing List", todoList)
+    printHeader("# Doing List")
+    printList(todoList)
 
 def printDoneList():
     todoList = getDoneList()
-    printList("# Done List", todoList)
+    printHeader("# Done List")
+    printList(todoList)
 
-def printList(listName, todoList):
-    print(listName)
+def printList(todoList):
     if(len(todoList) > 0):
         index = 1
         for todo in todoList:
             print("[" + str(index) + "] " + todo[1] + " : " + todo[2])
             index += 1
 
+def printHeader(string):
+    print(color.BOLD + color.WARNING + string + color.ENDC)
 
 
 def main(argv):
@@ -132,6 +150,10 @@ def main(argv):
     if(argv[1] == "end"):
         todoList = getDoingList()
         endTodo(todoList, argv[2])
+    
+    # Todo : Search    
 
 if __name__ == "__main__":
         main(sys.argv)
+
+
