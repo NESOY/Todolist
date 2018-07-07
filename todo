@@ -64,21 +64,18 @@ def removeTodo(todoList, index):
 
 # UPDATE        
 def startTodo(todoList, index):
-    global conn
-    id = todoList[int(index)-1][0]
-    with conn:
-        cur = conn.cursor()
-        sql = SQL_UPDATE_TODO
-        cur.execute(sql, [DOING, id])
-        conn.commit()
+   updateTodo(todoList, index, DOING)
 
 def endTodo(todoList, index):
+    updateTodo(todoList, index, DONE)
+
+def updateTodo(todoList, index, status):
     global conn
     id = todoList[int(index)-1][0]
     with conn:
         cur = conn.cursor()
         sql = SQL_UPDATE_TODO
-        cur.execute(sql, [DONE, id])
+        cur.execute(sql, [status, id])
         conn.commit()
 
 # PRINT
@@ -113,6 +110,7 @@ def main(argv):
     init()
     if(argv[1] == "add"):
         addTodo(argv[2])
+
     if(argv[1] == "list"):
         if(len(argv) > 2):
             if(argv[2] == "all"):
@@ -121,14 +119,16 @@ def main(argv):
                 printDoneList()
         else:
            printTodoList()
-
+    
     if(argv[1] == "remove"):
         # Todo : Check argv Size
         todoList = getTodoList()
         removeTodo(todoList, argv[2])
+
     if(argv[1] == "start"):
         todoList = getTodoList()
         startTodo(todoList, argv[2])
+
     if(argv[1] == "end"):
         todoList = getDoingList()
         endTodo(todoList, argv[2])
