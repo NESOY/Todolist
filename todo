@@ -8,9 +8,9 @@ DATABASE_NAME = "todolist.db"
 conn = sqlite.connect(DATABASE_NAME)
 
 # Status
-TODO = 'todo'
+TODO = ' todo'
 DOING = 'doing'
-DONE = 'done'
+DONE = ' done'
 
 # SQL
 SQL_GET_LIST = "SELECT * FROM task WHERE status = (?)"
