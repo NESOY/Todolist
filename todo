@@ -43,7 +43,8 @@ def addTodo(param):
     with conn:
         cur = conn.cursor()
         sql = SQL_INSERT_TODO
-        cur.execute(sql, [TODO, param])
+        desc = " ".join(param[2:])
+        cur.execute(sql, [TODO, desc])
         conn.commit()
 
 # READ
@@ -132,7 +133,7 @@ def printBlueHeader(string):
 def main(argv):
     init()
     if(argv[1] == "add"):
-        addTodo(argv[2]) # 띄어쓰기 시 입력 안되는 버그
+        addTodo(argv)
 
     if(argv[1] == "list"):
         if(len(argv) > 2):
