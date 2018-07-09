@@ -3,6 +3,7 @@
 
 import sqlite3 as sqlite
 import sys
+import datetime
 
 DATABASE_NAME = "todolist.db"
 conn = sqlite.connect(DATABASE_NAME)
@@ -12,13 +13,30 @@ TODO = ' todo'
 DOING = 'doing'
 DONE = ' done'
 
+# Time Format
+TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
 # SQL
 SQL_GET_LIST = "SELECT * FROM task WHERE status = (?)"
 SQL_DELETE_TODO = "DELETE FROM task WHERE id=(?)"
-SQL_UPDATE_TODO = "UPDATE task SET status = (?) WHERE id=(?)"
-SQL_INSERT_TODO = "INSERT INTO task(status, description) values (?,?)"
-SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, status TEXT, description TEXT)"
 
+SQL_UPDATE_TODO = "UPDATE task SET status = (?) WHERE id=(?)"
+SQL_UPDATE_START_TIME = "UPDATE task SET startTime = (?) WHERE id=(?)"
+SQL_UPDATE_END_TIME = "UPDATE task SET endTime = (?) WHERE id=(?)"
+
+SQL_INSERT_TODO = "INSERT INTO task(status, description) values (?,?)"
+SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, status TEXT, description TEXT, startTime TEXT, endTime TEXT)"
+SQL_USED_TIME = "SELECT strftime('%s','now', 'localtime') - strftime('%s',(?));"
+
+# Time
+def getUsingTime(startTime):
+    global conn
+    with conn:
+        cur = conn.cursor()
+        cur.execute(SQL_USED_TIME, [startTime])
+        for time in cur.fetchall(): # Refactoring call once
+            usedTime = time[0]
+        return usedTime
 # Color
 class color:
     WHITE = '\033[37m'
@@ -79,10 +97,14 @@ def removeTodo(todoList, index):
 
 # UPDATE        
 def startTodo(todoList, index):
-   updateTodo(todoList, index, DOING)
+    time = datetime.datetime.now().strftime(TIME_FORMAT)
+    updateTodo(todoList, index, DOING)
+    updateStartTime(todoList, index, time)
 
 def endTodo(todoList, index):
+    time = datetime.datetime.now()
     updateTodo(todoList, index, DONE)
+    updateEndTime(todoList, index, time)
 
 def updateTodo(todoList, index, status):
     global conn
@@ -92,7 +114,25 @@ def updateTodo(todoList, index, status):
         sql = SQL_UPDATE_TODO
         cur.execute(sql, [status, id])
         conn.commit()
+        
+def updateStartTime(todoList, index, time):
+    global conn
+    id = todoList[int(index)-1][0]
+    with conn:
+        cur = conn.cursor()
+        sql = SQL_UPDATE_START_TIME
+        cur.execute(sql, [time, id])
+        conn.commit()
 
+def updateEndTime(todoList, index, time):
+    global conn
+    id = todoList[int(index)-1][0]
+    with conn:
+        cur = conn.cursor()
+        sql = SQL_UPDATE_END_TIME
+        cur.execute(sql, [time, id])
+        conn.commit()
+        
 # PRINT
 def printAllList():
     printTodoList()
@@ -107,12 +147,25 @@ def printTodoList():
 def printDoingList():
     todoList = getDoingList()
     printBlueHeader("➤ Doing List")
-    printList(todoList, color.OKBLUE)
+    printDoingList2(todoList, color.OKBLUE)
 
 def printDoneList():
     todoList = getDoneList()
     printGreenHeader("➤ Done List")
     printList(todoList, color.OKGREEN)
+
+def printDoingList2(todoList, stringColor):
+    if(len(todoList) > 0):
+        index = 1
+        for todo in todoList:
+            status = todo[1]
+            desc = todo[2]
+            startTime = todo[3]
+            usedTime = getUsingTime(startTime)
+            hours, remainder = divmod(int(usedTime),60*60)
+            minutes, seconds = divmod(remainder,60)
+            print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC + " " + color.BOLD + str(hours) + ":" + str(minutes) + ":" + str(seconds) + color.ENDC)
+            index += 1
 
 def printList(todoList, stringColor):
     if(len(todoList) > 0):
