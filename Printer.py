@@ -22,29 +22,29 @@ class Printer:
         Printer.printYelloHeader("➤ Todo List")
         Printer.printList(todoList, color.WARNING)
 
-    @staticmethod
-    def printDoingList(todoList):
-        Printer.printBlueHeader("➤ Doing List")
-        Printer.printDoingList2(todoList, color.OKBLUE)
+    # @staticmethod
+    # def printDoingList(todoList):
+    #     Printer.printBlueHeader("➤ Doing List")
+    #     Printer.printDoingList2(todoList, color.OKBLUE)
 
     @staticmethod
     def printDoneList(todoList):
         Printer.printGreenHeader("➤ Done List")
         Printer.printList(todoList, color.OKGREEN)
 
-    @staticmethod
-    def printDoingList2(todoList, stringColor):
-        if(len(todoList) > 0):
-            index = 1
-            for todo in todoList:
-                status = todo[1]
-                desc = todo[2]
-                startTime = todo[3]
-                usedTime = getUsingTime(startTime)
-                hours, remainder = divmod(int(usedTime),60*60)
-                minutes, seconds = divmod(remainder,60)
-                print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC + " " + color.BOLD + str(hours) + ":" + str(minutes) + ":" + str(seconds) + color.ENDC)
-                index += 1
+    # @staticmethod
+    # def printDoingList2(todoList, stringColor):
+    #     if(len(todoList) > 0):
+    #         index = 1
+    #         for todo in todoList:
+    #             status = todo[1]
+    #             desc = todo[2]
+    #             startTime = todo[3]
+    #             usedTime = Printer.getUsingTime(startTime)
+    #             hours, remainder = divmod(int(usedTime),60*60)
+    #             minutes, seconds = divmod(remainder,60)
+    #             print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC + " " + color.BOLD + str(hours) + ":" + str(minutes) + ":" + str(seconds) + color.ENDC)
+    #             index += 1
 
     @staticmethod
     def printList(todoList, stringColor):

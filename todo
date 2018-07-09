@@ -133,6 +133,24 @@ def updateEndTime(todoList, index, time):
         sql = SQL_UPDATE_END_TIME
         cur.execute(sql, [time, id])
         conn.commit()
+
+
+def printDoingList(todoList):
+    Printer.printBlueHeader("➤ Doing List")
+    printDoingList2(todoList, color.OKBLUE)
+
+def printDoingList2(todoList, stringColor):
+    if(len(todoList) > 0):
+        index = 1
+        for todo in todoList:
+            status = todo[1]
+            desc = todo[2]
+            startTime = todo[3]
+            usedTime = getUsingTime(startTime)
+            hours, remainder = divmod(int(usedTime),60*60)
+            minutes, seconds = divmod(remainder,60)
+            print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC + " " + color.BOLD + str(hours) + ":" + str(minutes) + ":" + str(seconds) + color.ENDC)
+            index += 1
     
 def main(argv):
     init()
@@ -146,9 +164,12 @@ def main(argv):
         if(argv[1] == "list"):
             Printer.printTodoList(todoList)
         if(argv[1] == "all"):
-            Printer.printAllList(todoList, doingList, doneList)
+            # Printer.printAllList(todoList, doingList, doneList)
+            Printer.printTodoList(todoList)
+            printDoingList(doingList)
+            Printer.printDoneList(doneList)
         if(argv[1] == "doing"):
-            Printer.printDoingList(doingList)
+            printDoingList(doingList)
         if(argv[1] == "done"):
             Printer.printDoneList(doneList)
         if(argv[1] == "remove"):
