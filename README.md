@@ -19,3 +19,6 @@ todo end [doing list index] | end todo list
 
 ## License
 - [MIT](/LICENSE.md)
+
+## Reference
+- Opensource Guide : <https://github.com/atom/atom>
