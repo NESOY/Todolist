@@ -1,4 +1,4 @@
-todolist.db
+*.db
 .pytest_cache
 __pycache__
 .vscode
