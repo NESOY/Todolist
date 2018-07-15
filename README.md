@@ -1,4 +1,5 @@
 # TodoList
+[![Build Status](https://travis-ci.com/NESOY/Todolist.svg?branch=master)](https://travis-ci.com/NESOY/Todolist)
 - Command Interface Todolist
 
 ![No image](/image.png)
