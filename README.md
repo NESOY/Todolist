@@ -1,5 +1,5 @@
 # TodoList
-[![Build Status](https://travis-ci.com/NESOY/Todolist.svg?branch=master)](https://travis-ci.com/NESOY/Todolist)
+[![Build Status](https://travis-ci.com/NESOY/Todolist.svg?branch=master)](https://travis-ci.com/NESOY/Todolist) [![Coverage Status](https://coveralls.io/repos/github/NESOY/Todolist/badge.svg?branch=master)](https://coveralls.io/github/NESOY/Todolist?branch=master)
 - Command Interface Todolist
 
 ![No image](/image.png)

@@ -8,6 +8,9 @@ install:
 script:
   - "pytest"
 
+after_success:
+  - coveralls
+  
 notifications:
   email:
     - kyoje11@gmail.com
