@@ -7,7 +7,7 @@ install:
 
 script:
   - "pytest"
-  - "coverage run src/*coverage run src/*"
+  - "coverage run src/*"
 
 after_success:
   - coveralls
