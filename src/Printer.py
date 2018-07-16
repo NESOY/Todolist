@@ -1,3 +1,7 @@
+import datetime
+
+from string import Template
+
 class Printer:
     def printYelloHeader(self, string):
         print(color.BOLD + color.WARNING + string + color.ENDC)
@@ -14,23 +18,24 @@ class Printer:
 
     def printDoingList(self, todoList):
         self.printBlueHeader("➤ Doing List")
-        self.printDoingList2(todoList, color.OKBLUE)
+        self.printDoingWithTime(todoList, color.OKBLUE)
 
     def printDoneList(self, todoList):
         self.printGreenHeader("➤ Done List")
         self.printList(todoList, color.OKGREEN)
 
-    def printDoingList2(self, todoList, stringColor):
+    def printDoingWithTime(self, todoList, stringColor):
         if(len(todoList) > 0):
             index = 1
             for todo in todoList:
                 status = todo[1]
                 desc = todo[2]
                 startTime = todo[3]
-                usedTime = Printer.getUsingTime(startTime)
-                hours, remainder = divmod(int(usedTime),60*60)
-                minutes, seconds = divmod(remainder,60)
-                print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC + " " + color.BOLD + str(hours) + ":" + str(minutes) + ":" + str(seconds) + color.ENDC)
+                start = datetime.datetime.strptime(startTime, '%Y-%m-%d %H:%M:%S')
+                now = datetime.datetime.now()
+                usedTime = now - start
+                time = self.strfdelta(usedTime,'%H:%M:%S')
+                print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC + " " + color.BOLD + time + color.ENDC)
                 index += 1
 
     def printList(self, todoList, stringColor):
@@ -41,6 +46,16 @@ class Printer:
                 desc = todo[2]
                 print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC)
                 index += 1
+    
+    def strfdelta(self, tdelta, fmt):
+        d = {"D": tdelta.days}
+        hours, rem = divmod(tdelta.seconds, 3600)
+        minutes, seconds = divmod(rem, 60)
+        d["H"] = '{:02d}'.format(hours)
+        d["M"] = '{:02d}'.format(minutes)
+        d["S"] = '{:02d}'.format(seconds)
+        t = DeltaTemplate(fmt)
+        return t.substitute(**d)
 
 # Color
 class color:
@@ -53,3 +68,17 @@ class color:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
+
+class DeltaTemplate(Template):
+    delimiter = "%"
+
+def strfdelta(tdelta, fmt):
+    d = {"D": tdelta.days}
+    hours, rem = divmod(tdelta.seconds, 3600)
+    minutes, seconds = divmod(rem, 60)
+    d["H"] = '{:02d}'.format(hours)
+    d["M"] = '{:02d}'.format(minutes)
+    d["S"] = '{:02d}'.format(seconds)
+    t = DeltaTemplate(fmt)
+    return t.substitute(**d)

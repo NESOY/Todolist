@@ -1,6 +1,7 @@
 import sqlite3 as sqlite
 import datetime
 import os.path
+import time
 
 TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 # SQL
@@ -57,7 +58,7 @@ class Database:
 
     def updateStartTime(self, index):
         SQL = SQL_UPDATE_START_TIME.format(self.tableName)
-        time = datetime.datetime.now().strftime(TIME_FORMAT)
+        time = time.time()
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(SQL, [time, index])
