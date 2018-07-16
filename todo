@@ -24,7 +24,6 @@ def main(argv):
     doingList = database.getTodoList("DOING")
     doneList = database.getTodoList("DONE")
     
-    
     if(len(argv) > 1):
         # Printing
         if(argv[1] == "list"):
@@ -43,12 +42,13 @@ def main(argv):
         if(argv[1] == "add"):
             database.insertTodo("TODO", argv[2])
         if(argv[1] == "start"):
-            todoList[argv[1]]
-            database.updateStatus(1,"DOING")
-            database.updateStartTime(1)
+            index = int(argv[2])-1
+            database.updateStatus(todoList[index][0],"DOING")
+            database.updateStartTime(todoList[index][0])
         if(argv[1] == "end"):
-            database.updateStatus(0,"DONE")
-            database.updateEndTime(0)
+            index = int(argv[2])-1
+            database.updateStatus(doingList[index][0],"DONE")
+            database.updateEndTime(doingList[index][0])
 
             # Todo : Check argv Size
             # remove only todo list -> update doing, done 

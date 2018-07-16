@@ -22,7 +22,7 @@ class Printer:
 
     def printDoneList(self, todoList):
         self.printGreenHeader("➤ Done List")
-        self.printList(todoList, color.OKGREEN)
+        self.printDoneWithTime(todoList, color.OKGREEN)
 
     def printDoingWithTime(self, todoList, stringColor):
         if(len(todoList) > 0):
@@ -34,6 +34,21 @@ class Printer:
                 start = datetime.datetime.strptime(startTime, '%Y-%m-%d %H:%M:%S')
                 now = datetime.datetime.now()
                 usedTime = now - start
+                time = self.strfdelta(usedTime,'%H:%M:%S')
+                print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC + " " + color.BOLD + time + color.ENDC)
+                index += 1
+    
+    def printDoneWithTime(self, todoList, stringColor):
+        if(len(todoList) > 0):
+            index = 1
+            for todo in todoList:
+                status = todo[1]
+                desc = todo[2]
+                startTime = todo[3]
+                endTime = todo[4]
+                start = datetime.datetime.strptime(startTime, '%Y-%m-%d %H:%M:%S')
+                end = datetime.datetime.strptime(endTime, '%Y-%m-%d %H:%M:%S')
+                usedTime = end - start
                 time = self.strfdelta(usedTime,'%H:%M:%S')
                 print(stringColor + "#          " + color.ENDC + color.OKGREEN + status + ": " + color.ENDC + "[" + str(index) + "] " + stringColor + desc + color.ENDC + " " + color.BOLD + time + color.ENDC)
                 index += 1
