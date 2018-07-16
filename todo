@@ -1,0 +1,57 @@
+#!/usr/local/bin/python3
+# Author : Nesoy
+
+from src.Database import Database
+from src.Printer import Printer
+import sys
+
+database = None
+printer = None
+databaseName = "todolist.db"
+tableName = "todo"
+
+def init():
+    global database
+    global printer
+    database = Database()
+    database.createDatabase(databaseName)
+    database.createTable(tableName)
+    printer = Printer()
+
+def main(argv):
+    init()
+    todoList = database.getTodoList("TODO")
+    doingList = database.getTodoList("DOING")
+    doneList = database.getTodoList("DONE")
+
+    printer.printTodoList(todoList)
+    printer.printDoingList(doingList)
+    printer.printDoneList(doneList)
+    # if(len(argv) > 1):
+    #     #if(argv[1] == "add"):
+    #     #    addTodo(argv)
+    #     #if(argv[1] == "list"):
+    #     #    Printer.printTodoList(todoList)
+    #     #if(argv[1] == "all"):
+    #         # Printer.printAllList(todoList, doingList, doneList)
+    #     printer.printTodoList(todoList)
+    #     printer.printDoingList(doingList)
+    #     printer.printDoneList(doneList)
+    #     if(argv[1] == "doing"):
+    #         printDoingList(doingList)
+    #     if(argv[1] == "done"):
+    #         Printer.printDoneList(doneList)
+    #     if(argv[1] == "remove"):
+    #         # Todo : Check argv Size
+    #         # remove only todo list -> update doing, done 
+    #         removeTodo(todoList, argv[2])
+    #     if(argv[1] == "start"):
+    #         startTodo(todoList, argv[2])
+    #     if(argv[1] == "end"):
+    #         endTodo(doingList, argv[2])
+    #     # Todo : Search
+    # else:
+    #     Printer.printTodoList(todoList)
+
+if __name__ == "__main__":
+    main(sys.argv)
