@@ -1,15 +1,17 @@
 import sqlite3 as sqlite
+import datetime
 import os.path
 
+TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 # SQL
 ## CREATE
 SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS {}(id INTEGER PRIMARY KEY, status TEXT, content TEXT, startTime TEXT, endTime TEXT)"
 SQL_INSERT_TODO = "INSERT INTO {}(status, content) values (?,?)"
 SQL_GET_LIST = "SELECT * FROM {} WHERE status = (?)"
 SQL_UPDATE_TODO = "UPDATE {} SET status = (?) WHERE id=(?)"
-
 SQL_UPDATE_START_TIME = "UPDATE {} SET startTime = (?) WHERE id=(?)"
-SQL_UPDATE_END_TIME = "UPDATE {} SET endTime = (?) WHERE tid=(?)"
+SQL_UPDATE_END_TIME = "UPDATE {} SET endTime = (?) WHERE id=(?)"
+
 SQL_USED_TIME = "SELECT strftime('%s','now', 'localtime') - strftime('%s',(?));"
 SQL_DELETE_TODO = "DELETE FROM {} WHERE id=(?)"
 
@@ -52,4 +54,17 @@ class Database:
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(SQL, [status, index])
-            return cur.fetchall()
+
+    def updateStartTime(self, index):
+        SQL = SQL_UPDATE_START_TIME.format(self.tableName)
+        time = datetime.datetime.now().strftime(TIME_FORMAT)
+        with self.conn:
+            cur = self.conn.cursor()
+            cur.execute(SQL, [time, index])
+
+    def updateEndTime(self, index):
+        SQL = SQL_UPDATE_END_TIME.format(self.tableName)
+        time = datetime.datetime.now().strftime(TIME_FORMAT)
+        with self.conn:
+            cur = self.conn.cursor()
+            cur.execute(SQL, [time, index])

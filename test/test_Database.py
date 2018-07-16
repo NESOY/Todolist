@@ -61,3 +61,30 @@ def test_updateStatus():
     database.updateStatus(index, "DOING")
     todoList = database.getTodoList("DOING")
     assert len(todoList) == 1
+
+    index = todoList[0][0]
+    database.updateStatus(index, "DONE")
+    todoList = database.getTodoList("DONE")
+    assert len(todoList) == 1
+
+def test_updateStartTime():
+    # given
+    database.insertTodo("TODO", "CONTENT")
+    todoList = database.getTodoList("TODO")
+    index = todoList[0][0]
+    # when
+    database.updateStartTime(index)
+    # then
+    todoList = database.getTodoList("TODO")
+    assert todoList[0][3] != None
+
+def test_updateEndTime():
+    # given
+    database.insertTodo("TODO", "CONTENT")
+    todoList = database.getTodoList("TODO")
+    index = todoList[0][0]
+    # when
+    database.updateEndTime(index)
+    # then
+    todoList = database.getTodoList("TODO")
+    assert todoList[0][4] != None
