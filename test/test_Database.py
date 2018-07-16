@@ -51,3 +51,13 @@ def test_getTodoList():
     assert len(todoList) == 1
     assert todoList[0][1] == "DONE"
     assert todoList[0][2] == "CONTENT"
+
+def test_updateStatus():
+    database.insertTodo("TODO", "CONTENT")
+    todoList = database.getTodoList("TODO")
+    assert len(todoList) == 1
+    
+    index = todoList[0][0]
+    database.updateStatus(index, "DOING")
+    todoList = database.getTodoList("DOING")
+    assert len(todoList) == 1
