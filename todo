@@ -43,6 +43,7 @@ def main(argv):
         if(argv[1] == "add"):
             database.insertTodo("TODO", argv[2])
         if(argv[1] == "start"):
+            todoList[argv[1]]
             database.updateStatus(1,"DOING")
             database.updateStartTime(1)
         if(argv[1] == "end"):
