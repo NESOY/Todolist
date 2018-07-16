@@ -1,5 +1,5 @@
 import sqlite3 as sqlite
-
+import os.path
 
 # SQL
 SQL_GET_LIST = "SELECT * FROM task WHERE status = (?)"
@@ -13,13 +13,17 @@ SQL_INSERT_TODO = "INSERT INTO task(status, description) values (?,?)"
 SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, status TEXT, description TEXT, startTime TEXT, endTime TEXT)"
 SQL_USED_TIME = "SELECT strftime('%s','now', 'localtime') - strftime('%s',(?));"
 
+
 class Database:
     conn = None
 
-    def createDatabase(databaseName):
-        conn = sqlite.connect(databaseName)
+    def createDatabase(self, databaseName):
+        self.conn = sqlite.connect(databaseName)
 
-    def createTable(tableName):
-        with conn:
+    def removeDatabase(self, databaseName):
+        os.remove(databaseName)
+
+    def createTable(self, tableName):
+        with self.conn:
             cur = conn.cursor()
-            cur.execute(databaseName)
+            cur.execute(tableName)
