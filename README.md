@@ -10,14 +10,13 @@
 ## Command
 command | description
 --- | ---
-todo list | show todo list
-todo list all | show todo all list (todo, doing, done)
-todo list doing | show doing list 
-todo list done | show done list 
+todo | show todo list (todo, doing)
+todo list | show todo list (todo, doing)
+todo all | show todo all list (todo, doing, done)
+todo doing | show doing list 
+todo done | show done list 
 todo start [todo list index] | start todo list
 todo end [doing list index] | end todo list
-
-
 
 ## License
 - [MIT](/LICENSE.md)
